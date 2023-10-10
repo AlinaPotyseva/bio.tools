@@ -33,3 +33,18 @@ def length_count(seq: tuple, length_bounds: int or tuple = (0, 2 ** 32)) \
         length_bounds = (0, length_bounds)
     result = len(seq[0])
     return length_bounds[0] <= result <= length_bounds[1]
+
+def quality_check(seq: tuple, quality_threshold: int = 0) -> bool:
+    """
+    Function returns the quality of the sequence.
+    :param seq: consists of two strings: sequence and quality, type: tuple
+    :param quality_threshold: threshold value of average quality for filtering,
+    default is 0
+    :return: True if the average quality is less, then quality_threshold, else
+    False
+    """
+    quality_sum = 0
+    for letter in seq[1]:
+        quality_sum += ord(letter) - 33
+    mean = quality_sum / len(seq)
+    return mean >= quality_threshold
