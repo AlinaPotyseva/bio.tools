@@ -26,7 +26,7 @@ def length_count(seq: tuple, length_bounds: int or tuple = (0, 2 ** 32)) \
     :param seq: consists of two strings: sequence and quality, type: tuple
     :param length_bounds: the interval for filtering, type: tuple if both
     edges of the interval is given or int if only right edge is given, default
-    is (0, 2 ** 34)
+    is (0, 2 ** 32)
     :return: True if the length of the sequence is in length_bounds, else False
     """
     if type(length_bounds) == int:
