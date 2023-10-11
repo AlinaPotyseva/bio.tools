@@ -59,3 +59,56 @@ def dna_rna_tool_running(*input_data: str) -> str or list:
         return results_str
     else:
         return results
+
+
+def protein_tool_running(*args: Tuple[Union[List[str], str]],
+         method: Optional[str] = None) -> dict:
+    """
+    This function provides the access to the following methods:
+    1. Translate 1 letter to 3 letter encoding and *vice versa* - the last
+    argument: 'convert_aa_coding'
+        - needs at least 1 sequence 1- or 3- letter encoded. Can recieve
+        more than 1 sequences
+        - returns a dictionary containing translations between 1- and 3-
+        letter codes
+    2. Find possible RNA sequences for defined protein sequence - the
+    last argument: 'from_proteins_seqs_to_rna'
+        - needs at least 1 protein sequence 3-letter encoded
+        - returns a dictionary, where key is your input protein sequences
+        and values are combinations of RNA codones, which encode this protein
+    3. Determinate isoelectric point - the last argument:
+    'isoelectric_point_determination'
+        - needs an input containing at least 1 aminoacid. Can recive multiple
+        different protein sequences
+        - returns a dictionary, where key is your input protein sequence and
+        value is an isoelectric point of this protein
+    4. Calculate protein molecular weight - the last argument:
+    'calc_protein_molecular_weight'
+        - Seqs is an argument of the function. It is a string without
+    whitespace (e.g. 'AlaSer'). You can put as many arguments as you wish.
+        - returns a dictionary with protein sequences as keys and their
+        calculated molecular weight as corresponding values
+    5. Determine possible DNA sequence from protein sequence - the last
+    argument: 'back_transcribe'
+        - needs a string without whitespaces. You can put as many arguments as
+        you wish.
+        - returns a dictonary where keys are inputed protein sequences and
+        corresponding values are possible DNA codons
+    """
+    seqs_list, seq_on = check_input(*args, method=method)
+    print(f'Your sequences are: {seqs_list}',
+          f'The method is: {method}', sep='\n')
+    match method:
+        case 'convert_aa_coding':
+            recode_dict: dict = {}
+            for seq in seqs_list:
+                recode_dict[seq] = recode(seq=seq)
+            return recode_dict
+        case 'from_proteins_seqs_to_rna':
+            return from_proteins_seqs_to_rna(*seqs_list)
+        case 'calc_protein_molecular_weight':
+            return calc_protein_molecular_weight(*seqs_list)
+        case 'isoelectric_point_determination':
+            return isoelectric_point_determination(*seqs_list)
+        case 'back_translate':
+            return back_translate(*seqs_list)
