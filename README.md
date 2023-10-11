@@ -8,10 +8,10 @@
   * [The structure of the tool](#Structure)
   * [How to install the tool?](#Installation)
   * [What can module dna_rna_tool.py do?](#DNA_RNA_module) 
-  * [Module 2](#Protein module)
+  * [What can module protein_tool.py do?](#Protein_module)
   * [What can module fastaq_tool.py do?](#Fastaq_module)
   * [How to use bio_tools.py?](#bio_tools.py)
-  * [Usage example](#examples)
+  * [Usage example](#Examples)
  
 ### Applications
 
@@ -20,12 +20,13 @@ You can use this tool to get:
 * **reversed** DNA and RNA sequences
 * **complement** DNA and RNA sequences
 * **reversed** and **complement** DNA and RNA sequences
-* 
-*
-*
+* find possible **RNA sequences** for defined protein sequence
+* determinate **isoelectric point**
+* calculate protein **molecular weight**
+* determine possible **DNA sequence** from protein sequence
 * **filtered** suquences, which has passed all checks of your given *gc_bounds*, *length_bounds* and *quality_threshold* 
 
-### Stcucture 
+### Structure 
 
 ```python
     -/
@@ -60,6 +61,24 @@ This module consists of five different functions:
 
 ### Protein module
 
+This module consists of five different functions:
+
+* The `convert_aa_coding` translates 1 letter to 3 letter encoding and *vice versa* 
+  + needs at least 1 sequence 1- or 3- letter encoded. Can recieve more than 1 sequences
+  + returns a dictionary containing translations between 1- and 3-letter codes
+* The `from_proteins_seqs_to_rna` find possible RNA sequences for defined protein sequence
+  + needs at least 1 protein sequence 3-letter encoded
+  + returns a dictionary, where key is your input protein sequences and values are combinations of RNA codones, which encode this protein
+* The `isoelectric_point_determination` determinate isoelectric point
+  + needs an input containing at least 1 aminoacid. Can recive multiple different protein sequences
+  + returns a dictionary, where key is your input protein sequence and value is an isoelectric point of this protein
+* The `calc_protein_molecular_weight` calculate protein molecular weight
+  + Seqs is an argument of the function. It is a string without whitespace (e.g. 'AlaSer'). You can put as many arguments as you wish.
+  + returns a dictionary with protein sequences as keys and their calculated molecular weight as corresponding values
+* The `back_transcribe` determine possible DNA sequence from protein sequence
+  + needs a string without whitespaces. You can put as many arguments as you wish.
+  + returns a dictonary where keys are inputed protein sequences and corresponding values are possible DNA codons
+
 ### Fastaq module
 
 This module consists of three different functions:
@@ -79,7 +98,7 @@ This module consists of three different functions:
 >The main script consists of three functions, which uses modules, which were described above.
 
 #### 1. dna_rna_tool_running
-This program can perform some manipulations with input DNA and RNA sequences. The input should be in the format `dna_rna_tool_running('sequences', 'process')`.
+This program can perform some manipulations with inputed DNA and RNA sequences. The input should be in the format: `dna_rna_tool_running('sequences', 'process')`.
 
 As a process you should input:
 * `transcribe` to get a transcribed sequence 
@@ -89,7 +108,14 @@ As a process you should input:
 
 The desired number of sequences can be fed to the input at once. The program is able to distinguish between DNA and RNA, as well as character case.
 
-#### 2. 
+#### 2. protein_tool_running
+
+This program can perform some manipulations with inputed polyaminoacid sequences. The input should be in the format:
+`protein_tool_running('*args', 'method')`.
+
+Arguments:
+- `*args[str]` sequences to work with. You can pass several arguments into all functions
+- `method` - a method to use
 
 #### 3. fastaq_tool_running
 This program can perform some manipulations with input DNA sequences. The input should be in the format
@@ -106,3 +132,50 @@ fastaq_tool_running(seqs: dict,
 * As a `gc_bounds` you should input the interval for filtering, type: tuple if both edges of the interval is given or int (or float) if only right edge is given, default value is (0, 100)
 * As a `length_bounds` you should input the interval for filtering, type: tuple if both edges of the interval is given or int if only right edge is given, default value is (0, 2 ** 32)
 *  As a `quality_threshold` you should input a threshold value of average quality for filtering, default value is 0
+
+### Examples of usage
+
+#### dna_rna_tool_running
+```python
+dna_rna_tool_running('ATG', 'transcribe')  #'AUG'
+dna_rna_tool_running('ATG', 'reverse') #'GTA'
+dna_rna_tool_running('AtG', 'complement') #'TaC'
+dna_rna_tool_running('ATg', 'reverse_complement') #'cAT'
+dna_rna_tool_running('ATG', 'aT', 'reverse') #['GTA', 'Ta']`
+```
+
+#### protein_tool_running
+```python
+protein_tool_running('ArgArg', method='convert_aa_coding')
+# Your sequences are: ['ArgArg'] 
+# The method is: convert_aa_coding
+# {'ArgArg': 'RR'}
+protein_tool_running('ArgArg', method='from_proteins_seqs_to_rna')
+#Your sequences are: ['ArgArg']
+#The method is: from_proteins_seqs_to_rna
+#{'ArgArg': 'AGGAGG'}
+protein_tool_running('ArgArg', method='calc_protein_molecular_weight')
+#Your sequences are: ['ArgArg']
+#The method is: calc_protein_molecular_weight
+#{'ArgArg': 348}
+protein_tool_running('ArgArg', method='isoelectric_point_determination')
+#Your sequences are: ['ArgArg']
+#The method is: isoelectric_point_determination
+#{'ArgArg': 7.425}
+protein_tool_running('ArgArg', method='back_translate')
+#Your sequences are: ['ArgArg']
+#The method is: back_translate
+#{'ArgArg': 'CGTCGT'}
+```
+#### fastaq_tool_running
+```python
+fastaq_tool_running({
+    # 'name' : ('sequence', 'quality')
+    '@SRX079804:1:SRR292678:1:1101:21885:21885': ('ACAGCAACATAAACATGATGGGATGGCGTAAGCCCCCGAGATATCAGTTTACCCAGGATAAGAGATTAAATTATGAGCAACATTATTAA', 'FGGGFGGGFGGGFGDFGCEBB@CCDFDDFFFFBFFGFGEFDFFFF;D@DD>C@DDGGGDFGDGG?GFGFEGFGGEF@FDGGGFGFBGGD'),
+    '@SRX079804:1:SRR292678:1:1101:24563:24563': ('ATTAGCGAGGAGGAGTGCTGAGAAGATGTCGCCTACGCCGTTGAAATTCCCTTCAATCAGGGGGTACTGGAGGATACGAGTTTGTGTG', 'BFFFFFFFB@B@A<@D>BDDACDDDEBEDEFFFBFFFEFFDFFF=CC@DDFD8FFFFFFF8/+.2,@7<<:?B/:<><-><@.A*C>D'),
+    '@SRX079804:1:SRR292678:1:1101:30161:30161': ('GAACGACAGCAGCTCCTGCATAACCGCGTCCTTCTTCTTTAGCGTTGTGCAAAGCATGTTTTGTATTACGGGCATCTCGAGCGAATC', 'DFFFEGDGGGGFGGEDCCDCEFFFFCCCCCB>CEBFGFBGGG?DE=:6@=>A<A>D?D8DCEE:>EEABE5D@5:DDCA;EEE-DCD'),
+    '@SRX079804:1:SRR292678:1:1101:47176:47176': ('TGAAGCGTCGATAGAAGTTAGCAAACCCGCGGAACTTCCGTACATCAGACACATTCCGGGGGGTGGGCCAATCCATGATGCCTTTG', 'FF@FFBEEEEFFEFFD@EDEFFB=DFEEFFFE8FFE8EEDBFDFEEBE+E<C<C@FFFFF;;338<??D:@=DD:8DDDD@EE?EB'),
+    }, gc_bounds=50, length_bounds=32)) 
+    # {'@SRX079804:1:SRR292678:1:1101:21885:21885': ('ACAGCAACATAAACATGATGGGATGGCGTAAGCCCCCGAGATATCAGTTTACCCAGGATAAGAGATTAAATTATGAGCAACATTATTAA', 'FGGGFGGGFGGGFGDFGCEBB@CCDFDDFFFFBFFGFGEFDFFFF;D@DD>C@DDGGGDFGDGG?GFGFEGFGGEF@FDGGGFGFBGGD'), '@SRX079804:1:SRR292678:1:1101:24563:24563': ('ATTAGCGAGGAGGAGTGCTGAGAAGATGTCGCCTACGCCGTTGAAATTCCCTTCAATCAGGGGGTACTGGAGGATACGAGTTTGTGTG', 'BFFFFFFFB@B@A<@D>BDDACDDDEBEDEFFFBFFFEFFDFFF=CC@DDFD8FFFFFFF8/+.2,@7<<:?B/:<><-><@.A*C>D'), '@SRX079804:1:SRR292678:1:1101:47176:47176': ('TGAAGCGTCGATAGAAGTTAGCAAACCCGCGGAACTTCCGTACATCAGACACATTCCGGGGGGTGGGCCAATCCATGATGCCTTTG', 'FF@FFBEEEEFFEFFD@EDEFFB=DFEEFFFE8FFE8EEDBFDFEEBE+E<C<C@FFFFF;;338<??D:@=DD:8DDDD@EE?EB')}
+```
+Author: Potyseva Alina (mailto:alina.potyseva@gmail.com)
