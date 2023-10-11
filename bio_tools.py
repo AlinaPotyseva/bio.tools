@@ -1,5 +1,7 @@
 import modules.fastaq_tool as fqt
 import modules.dna_rna_tool as drt
+import modules.protein_tool as prt
+from typing import List, Optional, Tuple, Union
 
 def fastaq_tool_running(seqs: dict, gc_bounds: int or float or tuple = (0, 100),
           length_bounds: int or tuple = (0, 2 ** 32),
@@ -95,20 +97,20 @@ def protein_tool_running(*args: Tuple[Union[List[str], str]],
         - returns a dictonary where keys are inputed protein sequences and
         corresponding values are possible DNA codons
     """
-    seqs_list, seq_on = check_input(*args, method=method)
+    seqs_list, seq_on = prt.check_input(*args, method=method)
     print(f'Your sequences are: {seqs_list}',
           f'The method is: {method}', sep='\n')
     match method:
         case 'convert_aa_coding':
             recode_dict: dict = {}
             for seq in seqs_list:
-                recode_dict[seq] = recode(seq=seq)
+                recode_dict[seq] = prt.convert_aa_coding(seq=seq)
             return recode_dict
         case 'from_proteins_seqs_to_rna':
-            return from_proteins_seqs_to_rna(*seqs_list)
+            return prt.from_proteins_seqs_to_rna(*seqs_list)
         case 'calc_protein_molecular_weight':
-            return calc_protein_molecular_weight(*seqs_list)
+            return prt.calc_protein_molecular_weight(*seqs_list)
         case 'isoelectric_point_determination':
-            return isoelectric_point_determination(*seqs_list)
+            return prt.isoelectric_point_determination(*seqs_list)
         case 'back_translate':
-            return back_translate(*seqs_list)
+            return prt.back_translate(*seqs_list)
