@@ -1,4 +1,3 @@
-![изображение](https://github.com/AlinaPotyseva/bio_tools/assets/145059499/2391a28a-5382-4160-9c57-2899504d16bb)![изображение](https://github.com/AlinaPotyseva/bio_tools/assets/145059499/5389c37d-bed5-4473-8cc1-8b189356482f)# bio_tool
 ## Here it is some useful tools for a junior bioinformatician
 ***
 > *Using this repository you can take advantage of several programs for working with nucleic acids, proteins and fastq sequences.*
