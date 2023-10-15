@@ -76,3 +76,43 @@ def quality_check(seq: tuple, quality_threshold: int = 0) -> bool:
         quality_sum += ord(letter) - 33
     mean = quality_sum / len(seq)
     return mean >= quality_threshold
+
+def check_dir() -> bool:
+    """
+    Checks if directory fastq_filtrator_resuls exists. If it exists, the
+    function returns True, else it creates the directory in the working
+    directore
+    "fastq_filtrator_resuls" and returns True.
+    :return: True always
+    """
+    if os.path.exists('fastq_filtrator_resuls'):
+        return True
+    else:
+        os.mkdir('fastq_filtrator_resuls')
+        return True
+
+def fasta_writing(out_data: dict, input_file: str,
+                  output_filename: str = None):
+    """
+    Function creates a file with results of filtration
+    :param out_data: data after filtration
+    :param input_file: name of the inputted file
+    :param output_filename: name of the output file, if None,
+    then outputed_filename = inputed_file
+    :return: a file with results of filtering
+    """
+    if check_dir():
+        if output_filename is None:
+            output_filename = input_file
+    with open(os.path.join('fastq_filtrator_resuls', output_filename),
+              mode='w') as file:
+        for key in out_data:
+            if '@' in key:
+                file.write(key + '\n')
+            else:
+                file.write('@' + key + '\n')
+            file.write(out_data[key][0] + '\n')
+            file.write('+' + key)
+            file.write(out_data[key][1] + '\n')
+            file.write('\n')
+    return file
