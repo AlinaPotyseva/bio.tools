@@ -3,33 +3,36 @@ import modules.dna_rna_tool as drt
 import modules.protein_tool as prt
 from typing import List, Optional, Tuple, Union
 
-def fastaq_tool_running(seqs: dict, gc_bounds: int or float or tuple = (0, 100),
+def fastaq_tool_running(input_path: str, input_file: str,
+          gc_bounds: int or float or tuple = (0, 100),
           length_bounds: int or tuple = (0, 2 ** 32),
-          quality_threshold: int = 0) -> dict:
+          quality_threshold: int = 0, output_filename=None):
     """
-    This function is main. The main function returns a dictionary consisting
+    This function is main. The main function returns a file consisting
     of only those sequences that pass all conditions.
-    :param seqs: dictionary consisting of fastq-sequences, the structure is:
-    Key - a string, the name of the sequence, Value - tuple of two strings:
-    sequence and quality
+    :param input_path: path, where the file is located
+    :param input_file: name of the inputted file
     :param gc_bounds: the interval for filtering, type: tuple if both edges of
     the interval is given or int or float if only right edge is given, default
     is (0, 100)
     :param length_bounds: the interval for filtering, type: tuple if both
     edges of the interval is given or int if only right edge is given, default
-    is (0, 2 ** 34)
+    is (0, 2 ** 32)
     :param quality_threshold: threshold value of average quality for filtering,
     default is 0
-    :return: returns a dictionary consisting of only those sequences that pass
-    all conditions
+    :param output_filename: name of the output file, if None, then 
+    outputed_filename = inputed_file
+    :return: a file with results of filtering
     """
-    result = {}
+
+    seqs = fqt.fastaq_reading(input_path, input_file)
+    out_data = {}
     for seq in seqs:
         if fqt.gc_count(seqs[seq][0], gc_bounds) and \
-            fqt.length_count(seqs[seq][0], length_bounds) and \
-                fqt.quality_check(seqs[seq][1], quality_threshold):
-            result[seq] = seqs[seq]
-    return result
+           fqt.length_count(seqs[seq][0], length_bounds) and \
+           fqt.quality_check(seqs[seq][1], quality_threshold):
+            out_data[seq] = seqs[seq]
+    fqt.fasta_writing(out_data, input_file, output_filename)
     
 def dna_rna_tool_running(*input_data: str) -> str or list:
     """
