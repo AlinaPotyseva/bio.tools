@@ -6,7 +6,7 @@ from typing import List, Optional, Tuple, Union
 def fastaq_tool_running(input_path: str, input_file: str,
           gc_bounds: int or float or tuple = (0, 100),
           length_bounds: int or tuple = (0, 2 ** 32),
-          quality_threshold: int = 0, output_filename=None):
+          quality_threshold: int = 0, output_filename: str = None):
     """
     This function is main. The main function returns a file consisting
     of only those sequences that pass all conditions.
