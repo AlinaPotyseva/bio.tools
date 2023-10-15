@@ -48,3 +48,32 @@ def quality_check(seq: tuple, quality_threshold: int = 0) -> bool:
         quality_sum += ord(letter) - 33
     mean = quality_sum / len(seq)
     return mean >= quality_threshold
+    
+def check_file(input_file: str) -> bool:
+    """
+    Function checks if inputed data is file or not
+    :param input_file: The name of the inputed file.
+    :return: True is inputed data is a file, else False.
+    """
+    if os.path.isfile(input_file):
+        return True
+    else:
+        return False
+
+def fastaq_reading(input_path: str, input_file: str) -> dict:
+    """
+    Function reads an inputed file.
+    :param input_path: path, where the file is located
+    :param input_file: the name of the file
+    :return: a dictionary with fastq sequences
+    """
+    if check_file(input_file):
+        fastq_dict = {}
+        with open(os.path.join(input_path, input_file)) as file:
+            for line in file:
+                if ' ' in line and '+' not in line:
+                    sequence = file.readline().strip()
+                    quality = file.readline().strip()
+                    fastq_dict[line] = ([sequence, quality])
+        return fastq_dict
+
