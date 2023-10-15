@@ -1,4 +1,4 @@
-# bio_tool
+![изображение](https://github.com/AlinaPotyseva/bio_tools/assets/145059499/2391a28a-5382-4160-9c57-2899504d16bb)![изображение](https://github.com/AlinaPotyseva/bio_tools/assets/145059499/5389c37d-bed5-4473-8cc1-8b189356482f)# bio_tool
 ## Here it is some useful tools for a junior bioinformatician
 ***
 > *Using this repository you can take advantage of several programs for working with nucleic acids, proteins and fastq sequences.*
@@ -81,8 +81,13 @@ This module consists of five different functions:
 
 ### Fastaq module
 
-This module consists of three different functions:
+This module consists of seven different functions:
 
+ * The `check_file` checks if inputed data is file or not. It returns True if inputed data is a file, else False. Inputed data consists of just one parametr:
+   + `input_file` is the name of the inputed file.
+ * The `fastaq_reading` function reads an inputed file. It returns a dictionary with fastq sequences. Inputed data consists of some parametrs:
+   + the first one is `input_path` is the path, where the inputted file is located.
+   + the second one is `input_file` is the name of the inputted file.
  * The `gc_count` function counts GC-content of the inputed sequence. It returns True if GC-content is in a given interval (gc_bounds), else it returns False. Inputed data consists of some parametrs:
    + the first on is `seq`, which represents two strings: sequence and quality and it's type is tuple
    + the second one is `gc_bounds`, which represents the interval for filtering, type of this parametr can be tuple if both edges of the interval is given or int (float) if only right edge is given, default value is (0, 100)
@@ -92,6 +97,11 @@ This module consists of three different functions:
  * The `quality_check` function returns the quality of the sequence. It returns True if the average quality is less, then *quality_threshold*, else False. Inputed data consists of some parametrs:
    + the first on is `seq`, which consists of two strings: sequence and quality and it's type is tuple
    + the second one is `quality_threshold`, which is a threshold value of average quality for filtering, default value is 0
+ * The `check_dir` checks if directory fastq_filtrator_resuls exists. If it exists, the function returns True, else it creates the directory in the working directory and returns True.
+ * The `fasta_writing` creates a file with results of filtration. Inputed data consists of some parametrs:
+   + the first on is `out_data`, which is a dictionary of data after filtration
+   + the second one is `input_file`, which is the name of the inputted file.
+   + the third one is `output_filename`, which is the name of the outputted file, if `outputed_filename` is None then `outputed_filename = inputed_file`
  
 ###  bio_tools.py
 
@@ -120,18 +130,19 @@ Arguments:
 #### 3. fastaq_tool_running
 This program can perform some manipulations with input DNA sequences. The input should be in the format
 ```python
-fastaq_tool_running(seqs: dict, 
-                    gc_bounds: int or float or tuple = (0, 100),
-                    length_bounds: int or tuple = (0, 2 ** 32),
-                    quality_threshold: int = 0) -> dict
+fastaq_tool_running(input_path: str, input_file: str,
+          gc_bounds: int or float or tuple = (0, 100),
+          length_bounds: int or tuple = (0, 2 ** 32),
+          quality_threshold: int = 0, output_filename: str = None)
 ```
 
-* As a `seqs` you should input a dictionary consisting of fastq-sequences, the structure is:
-    + Key - a string, the name of the sequence
-    + Value - tuple of two strings: sequence and quality
+* As an `input_path` you should input a path, where the file is located
+* As an `input_file` you should input the name of the inputted file
 * As a `gc_bounds` you should input the interval for filtering, type: tuple if both edges of the interval is given or int (or float) if only right edge is given, default value is (0, 100)
 * As a `length_bounds` you should input the interval for filtering, type: tuple if both edges of the interval is given or int if only right edge is given, default value is (0, 2 ** 32)
-*  As a `quality_threshold` you should input a threshold value of average quality for filtering, default value is 0
+* As a `quality_threshold` you should input a threshold value of average quality for filtering, default value is 0
+* As an `output_filename` you should input the name of the outputted file, if `outputed_filename` is None then `outputed_filename = inputed_file`
+As a result of the work of the program you will get a file with filtered sequences in the directory `fastq_filtrator_resuls`
 
 ### Examples of usage
 
@@ -168,30 +179,9 @@ protein_tool_running('ArgArg', method='back_translate')
 #{'ArgArg': 'CGTCGT'}
 ```
 #### fastaq_tool_running
-```python
-fastaq_tool_running({
-    # 'name' : ('sequence', 'quality')
-    '@SRX079804:1:SRR292678:1:1101:21885:21885':
-    ('ACAGCAACATAAACATGATGGGATGGCGTAAGCCCCCGAGATATCAGTTTACCCAGGATAAGAGATTAAATTATGAGCAACATTATTAA',
-    'FGGGFGGGFGGGFGDFGCEBB@CCDFDDFFFFBFFGFGEFDFFFF;D@DD>C@DDGGGDFGDGG?GFGFEGFGGEF@FDGGGFGFBGGD'),
-    '@SRX079804:1:SRR292678:1:1101:24563:24563':
-    ('ATTAGCGAGGAGGAGTGCTGAGAAGATGTCGCCTACGCCGTTGAAATTCCCTTCAATCAGGGGGTACTGGAGGATACGAGTTTGTGTG',   
-    'BFFFFFFFB@B@A<@D>BDDACDDDEBEDEFFFBFFFEFFDFFF=CC@DDFD8FFFFFFF8/+.2,@7<<:?B/:<><-><@.A*C>D'),
-    '@SRX079804:1:SRR292678:1:1101:30161:30161':
-    ('GAACGACAGCAGCTCCTGCATAACCGCGTCCTTCTTCTTTAGCGTTGTGCAAAGCATGTTTTGTATTACGGGCATCTCGAGCGAATC',
-    'DFFFEGDGGGGFGGEDCCDCEFFFFCCCCCB>CEBFGFBGGG?DE=:6@=>A<A>D?D8DCEE:>EEABE5D@5:DDCA;EEE-DCD'),
-    '@SRX079804:1:SRR292678:1:1101:47176:47176':
-    ('TGAAGCGTCGATAGAAGTTAGCAAACCCGCGGAACTTCCGTACATCAGACACATTCCGGGGGGTGGGCCAATCCATGATGCCTTTG',
-    'FF@FFBEEEEFFEFFD@EDEFFB=DFEEFFFE8FFE8EEDBFDFEEBE+E<C<C@FFFFF;;338<??D:@=DD:8DDDD@EE?EB'),
-    }, gc_bounds=50, length_bounds=32)) 
-    # {'@SRX079804:1:SRR292678:1:1101:21885:21885':
-    #('ACAGCAACATAAACATGATGGGATGGCGTAAGCCCCCGAGATATCAGTTTACCCAGGATAAGAGATTAAATTATGAGCAACATTATTAA',
-    #'FGGGFGGGFGGGFGDFGCEBB@CCDFDDFFFFBFFGFGEFDFFFF;D@DD>C@DDGGGDFGDGG?GFGFEGFGGEF@FDGGGFGFBGGD'),
-    #'@SRX079804:1:SRR292678:1:1101:24563:24563':
-    #('ATTAGCGAGGAGGAGTGCTGAGAAGATGTCGCCTACGCCGTTGAAATTCCCTTCAATCAGGGGGTACTGGAGGATACGAGTTTGTGTG',
-    #'BFFFFFFFB@B@A<@D>BDDACDDDEBEDEFFFBFFFEFFDFFF=CC@DDFD8FFFFFFF8/+.2,@7<<:?B/:<><-><@.A*C>D'),
-    #'@SRX079804:1:SRR292678:1:1101:47176:47176':
-    #('TGAAGCGTCGATAGAAGTTAGCAAACCCGCGGAACTTCCGTACATCAGACACATTCCGGGGGGTGGGCCAATCCATGATGCCTTTG',
-    #'FF@FFBEEEEFFEFFD@EDEFFB=DFEEFFFE8FFE8EEDBFDFEEBE+E<C<C@FFFFF;;338<??D:@=DD:8DDDD@EE?EB')}
-```
+![изображение](https://github.com/AlinaPotyseva/bio_tools/assets/145059499/22282069-1fe0-402f-93f9-2c5f9c6c5653)
+fastaq_tool_running('/home/alina/PycharmProjects/HW_6_2','data.txt')
+![изображение](https://github.com/AlinaPotyseva/bio_tools/assets/145059499/ed5ef267-2e59-4d04-bb4a-09162c319a95)
+![изображение](https://github.com/AlinaPotyseva/bio_tools/assets/145059499/bca62998-63be-40ee-b012-661d06d325fd)
+
 Author: Potyseva Alina (mailto:alina.potyseva@gmail.com)
