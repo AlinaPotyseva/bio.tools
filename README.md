@@ -178,13 +178,5 @@ protein_tool_running('ArgArg', method='back_translate')
 #{'ArgArg': 'CGTCGT'}
 ```
 #### fastaq_tool_running
-![изображение](https://github.com/AlinaPotyseva/bio_tools/assets/145059499/22282069-1fe0-402f-93f9-2c5f9c6c5653)
-
-```python
-fastaq_tool_running('/home/alina/PycharmProjects/HW_6_2','data.txt')
-```
-
-![изображение](https://github.com/AlinaPotyseva/bio_tools/assets/145059499/ed5ef267-2e59-4d04-bb4a-09162c319a95)
-![изображение](https://github.com/AlinaPotyseva/bio_tools/assets/145059499/bca62998-63be-40ee-b012-661d06d325fd)
 
 Author: Potyseva Alina (mailto:alina.potyseva@gmail.com)
