@@ -1,3 +1,5 @@
+import os
+
 def convert_multiline_fasta_to_oneline(input_fasta, output_fasta=''):
     """
     Function, reads the input fasta file, in which the sequence can be split
@@ -10,7 +12,7 @@ def convert_multiline_fasta_to_oneline(input_fasta, output_fasta=''):
     """
 
     if output_fasta == '':
-        output_fasta = input_fasta.split('/')[-1]
+        output_fasta = os.path.basename(input_fasta)
     with open(input_fasta, 'r') as fasta_file:
         fasta_lines = fasta_file.readlines()
     with open('output_' + output_fasta + '.fasta', 'w') as output_fasta:
