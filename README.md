@@ -4,7 +4,6 @@
 ***
 ## Table of contents
   * [What you can do using this tool?](#Applications)
-  * [The structure of the tool](#Structure)
   * [How to install the tool?](#Installation)
   * [What can module dna_rna_tool.py do?](#DNA_RNA_module) 
   * [What can module protein_tool.py do?](#Protein_module)
@@ -23,21 +22,11 @@ You can use this tool to get:
 * determinate **isoelectric point**
 * calculate protein **molecular weight**
 * determine possible **DNA sequence** from protein sequence
-* **filtered** suquences, which has passed all checks of your given *gc_bounds*, *length_bounds* and *quality_threshold* 
-
-### Structure 
-
-```python
-    -/
-     |- bio_tools.py
-     |- README.md
-     |- modules/
-           |- dna_rna_tool.py
-           |- доп_модуль_2.py
-           |- fastaq_tool.py
-           |- ...
-```
- 
+* **filtered** suquences, which has passed all checks of your given *gc_bounds*, *length_bounds* and *quality_threshold*
+* **convert** a fasta file to oneline format
+* **shift** the start position in the fasta file
+* **get** flanking genes from gbk annotation
+  
 To work with the program a user only needs to import the main script and call any of the three functions from it.
 
 ### Installation
@@ -143,6 +132,22 @@ fastaq_tool_running(input_path: str, input_file: str,
 * As an `output_filename` you should input the name of the outputted file, if `outputed_filename` is None then `outputed_filename = inputed_file`
 As a result of the work of the program you will get a file with filtered sequences in the directory `fastq_filtrator_resuls`
 
+### bio_files_processor.py
+This script can perform some manipulations with files. It consists of three functions:
+* `convert_multiline_fasta_to_oneline` reads the input fasta file, in which the sequence can be split into several lines, and then saves it into a new fasta file in which each sequence fits into a single line. It returns the new fasta file. Inputed data consists of some parametrs:
+ + `input_fasta` is the path to the fasta file
+ + `output_fasta` the name of output file
+* `change_fasta_start_pos` shifts the starting position in the file. It returns the new fasta file. Inputed data consists of some parametrs:
+ + `input_fasta` is the path to the fasta file
+ + `shift` by how much to shift the initial position in the file
+ + `output_fasta` the name of output file
+* `select_genes_from_gbk_to_fasta` gets flanking genes from gbk annotation. It returns the new fasta file. Inputed data consists of some parametrs:
+ + `input_fasta` is the path to the gbk file
+ + `genes` list of genes
+ + `n_before` number of genes before the gene of interest, default=1
+ + `n_after` number of genes after the gene of interest, default=1
+ + `output_fasta` the name of output file
+   
 ### Examples of usage
 
 #### dna_rna_tool_running
