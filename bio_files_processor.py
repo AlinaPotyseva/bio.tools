@@ -68,3 +68,53 @@ def change_fasta_start_pos(input_fasta: str, shift: int, output_fasta: str = Non
         output_fasta_2 = output_fasta
     with open(os.path.join(output_dir, output_fasta_2), mode='w') as file:
         file.write(result_sequence)
+
+def select_genes_from_gbk_to_fasta(input_gbk: str, genes: list, n_before=1, 
+                                   n_after=1, output_fasta=''):
+    """
+    Function pulls flanking genes from gbk annotation.
+    :param input_gbk: the path to the fasta file
+    :param genes: list of genes
+    :param n_before: number of genes before the gene of interest, default=1
+    :param n_after: number of genes after the gene of interest, default=1
+    :param output_fasta: the name of output file, if not given adds 'out' at
+    the beginning of the input file
+    :return: the fasta file
+    """
+    with open(input_gbk, 'r') as gbk_file:
+        gbk_lines = gbk_file.readlines()
+    all_genes = [line.split('"')[1] for line in gbk_lines if "/gene=" in line]
+    result_genes = []
+    for gene in genes:
+        target_gene = all_genes.index(gene)
+        i = 1
+        j = 1
+        while i <= n_before:
+            if target_gene-i >= 0:
+                result_genes.append(all_genes[target_gene-i])
+            i += 1
+        while j <= n_after:
+            if target_gene+j <= len(all_genes):
+                result_genes.append(all_genes[target_gene+j])
+            j += 1
+    indexes = []
+    for new_gene in result_genes:
+        indexes.append([gbk_lines.index(line) for line in gbk_lines if new_gene in line])
+    seqs = []
+    for ind in indexes:
+        start = ind[0]
+        while '/translation=' not in gbk_lines[start]:
+            start += 1
+        end = start+1
+        seq = gbk_lines[start].split('"')[1].replace('\n', '')
+        while '"' not in gbk_lines[end]:
+            seq = seq+gbk_lines[end].replace('\n', '').replace(' ', '')
+            end += 1
+        seq = seq+gbk_lines[end].split('"')[0].replace(' ', '')
+        seqs.append(seq)
+    if output_fasta == '':
+        output_fasta = input_gbk.split('/')[-1]
+    with open('out_'+output_fasta+'.fasta', 'w') as output_fasta:
+        for n in range(len(result_genes)):
+            output_fasta.write('>'+result_genes[n]+'\n')
+            output_fasta.write(seqs[n]+'\n')
