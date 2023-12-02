@@ -36,8 +36,7 @@ def change_fasta_start_pos(input_fasta: str, shift: int, output_fasta: str = Non
     :param input_fasta: the path to the fasta file
     :param shift: integer (can be negative) - by how much to shift the initial 
     position in the file
-    :param output_fasta: the name of output file, if not given adds 'out' at
-    the beginning of the input file
+    :param output_fasta: the name of output file
     :return:  a fasta file with shifted sequence
     """
 
