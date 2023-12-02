@@ -76,8 +76,7 @@ def select_genes_from_gbk_to_fasta(input_gbk: str, genes: list, n_before=1,
     :param genes: list of genes
     :param n_before: number of genes before the gene of interest, default=1
     :param n_after: number of genes after the gene of interest, default=1
-    :param output_fasta: the name of output file, if not given adds 'out' at
-    the beginning of the input file
+    :param output_fasta: the name of output file
     :return: the fasta file
     """
     with open(input_gbk, 'r') as gbk_file:
