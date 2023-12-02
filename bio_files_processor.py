@@ -6,7 +6,7 @@ def convert_multiline_fasta_to_oneline(input_fasta, output_fasta=''):
     into several lines, and then saves it into a new fasta file in which each
     sequence fits into a single line.
     :param input_fasta: the path to the fasta file
-    :param output_fasta: the name of output file, if not given adds 'out' at
+    :param output_fasta: the name of output file
     the beginning of the input file
     :return: the new fasta file
     """
